@@ -1,2 +1,1 @@
-# superMosaic
-iPhoneアプリの説明文です
+Upload to GitHub Pages.
