@@ -1,1 +1,307 @@
-<!doctype html><html lang='ja'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>MahjongEYE</title><link rel='stylesheet' href='style.css'></head><body><header><h1>MahjongEYE</h1><h2>カメラを向けるだけ。AIが麻雀牌を瞬時に認識。</h2><p>MahjongEYEは、麻雀牌をAIで認識し、得点計算や対局管理をサポートするアプリです。</p></header><div class='card'><h2>主な機能</h2><ul><li>カメラ・写真から麻雀牌をAI認識</li><li>点数計算のサポート</li><li>得点履歴・対局履歴を保存</li><li>初心者にも分かりやすい操作</li></ul></div><div class='card'><h2>おすすめの方</h2><p>点数計算が苦手な方、対局記録を残したい方、麻雀をもっと気軽に楽しみたい方におすすめです。</p></div><div class='card'><h2>セキュリティ</h2><p>麻雀牌画像はユーザーが明示的に解析を実行した場合のみ送信されます。通信はHTTPS/TLSで暗号化され、AI解析完了後は画像を速やかに削除します。</p><a class='btn' href='privacy.html'>Privacy Policy</a></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>superMosaic — Hide what matters, instantly</title>
+<meta name="description" content="Auto-detect faces, skin and sensitive areas, then blur, mosaic, white-out or black-out in a tap. Batch-process many photos, merge 4 into one, and strip black bars from screenshots. 100% on-device." />
+<link rel="icon" href="assets/icon.png" />
+<meta property="og:title" content="superMosaic — Hide what matters, instantly" />
+<meta property="og:description" content="Auto-detect faces & sensitive areas, then blur, mosaic, white-out or black-out in a tap. Batch, 4-in-1 merge, screenshot bar removal — all on-device." />
+<meta property="og:image" content="assets/og.png" />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#07070f" />
+<style>
+  :root{
+    --bg:#07070f;
+    --card:rgba(255,255,255,.05);
+    --border:rgba(255,255,255,.10);
+    --text:#f4f4fa;
+    --muted:#a7a7bd;
+    --pink:#ff2d8c;
+    --blue:#38bdf8;
+    --grad:linear-gradient(120deg,#ff2d8c,#7c3aed,#38bdf8);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  .lang-ja{display:none}
+  body.ja .lang-en{display:none}
+  body.ja .lang-ja{display:initial}
+  body.ja .lang-ja.block{display:block}
+
+  /* glow background */
+  .bg-glow{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg)}
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.5}
+  .bg-glow::before{width:540px;height:540px;background:#ff2d8c;top:-180px;left:-140px}
+  .bg-glow::after{width:500px;height:500px;background:#0ea5e9;bottom:-200px;right:-140px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,7,15,.62);border-bottom:1px solid var(--border)}
+  .nav{display:flex;align-items:center;gap:14px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:.2px}
+  .brand img{width:34px;height:34px;border-radius:9px}
+  .nav .spacer{flex:1}
+  .nav a.link{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600}
+  .nav a.link:hover{color:var(--text)}
+  .nav a.priv{border:1px solid var(--border);padding:7px 14px;border-radius:999px;color:var(--text)}
+  .nav a.priv:hover{border-color:var(--pink);background:rgba(255,45,140,.12)}
+  .langtoggle{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .langtoggle button{background:transparent;color:var(--muted);border:0;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+  .langtoggle button.active{background:var(--grad);color:#fff}
+
+  /* hero */
+  .hero{padding:74px 0 30px;text-align:center}
+  .hero img.appicon{width:104px;height:104px;border-radius:24px;box-shadow:0 18px 50px rgba(255,45,140,.35);margin-bottom:24px}
+  .hero h1{font-size:clamp(34px,6vw,62px);line-height:1.08;font-weight:900;letter-spacing:-.5px}
+  .hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p.sub{color:var(--muted);font-size:clamp(16px,2.4vw,20px);max-width:640px;margin:18px auto 0}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+  .appstore{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#000;text-decoration:none;padding:12px 20px;border-radius:14px;font-weight:700;transition:transform .15s}
+  .appstore:hover{transform:translateY(-2px)}
+  .appstore svg{width:24px;height:24px}
+  .appstore small{display:block;font-size:10px;font-weight:600;opacity:.7;line-height:1}
+  .appstore b{font-size:18px;line-height:1.15}
+  .ghost{display:inline-flex;align-items:center;padding:12px 20px;border-radius:14px;border:1px solid var(--border);color:var(--text);text-decoration:none;font-weight:700;transition:.15s}
+  .ghost:hover{border-color:var(--pink);background:rgba(255,45,140,.12)}
+  .note{margin-top:18px;color:var(--muted);font-size:13px}
+
+  /* effect showcase strip */
+  .fxwrap{margin:46px 0 8px}
+  .fxgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .fxitem{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--border);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+  .fxitem img{width:100%;display:block;aspect-ratio:9/19.5;object-fit:cover;object-position:center 28%}
+  .fxitem span{position:absolute;left:10px;bottom:10px;font-size:12px;font-weight:800;letter-spacing:.3px;
+    background:rgba(7,7,15,.66);backdrop-filter:blur(6px);padding:5px 11px;border-radius:999px;border:1px solid var(--border)}
+  @media(max-width:760px){.fxgrid{grid-template-columns:repeat(2,1fr)}}
+
+  /* feature rows */
+  section.features{padding:36px 0 10px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;margin:70px 0}
+  .row.rev .txt{order:2}
+  .row .shot{display:flex;justify-content:center;gap:16px}
+  .row .shot img{width:100%;max-width:330px;border-radius:24px;border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+  .row .shot.duo img{max-width:230px}
+  .tag{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;background:rgba(255,45,140,.16);color:#ffa6cd;padding:5px 11px;border-radius:999px;margin-bottom:14px}
+  .row h2{font-size:clamp(24px,3.4vw,34px);line-height:1.2;font-weight:850;margin-bottom:12px}
+  .row p{color:var(--muted);font-size:16px}
+  .row ul{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .row li{display:flex;gap:10px;color:var(--text);font-size:15px}
+  .row li::before{content:"";flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:var(--grad);margin-top:2px;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/></svg>") center/16px no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/></svg>") center/16px no-repeat}
+
+  /* highlight strip */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:54px 0}
+  .gcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px}
+  .gcard .ic{font-size:24px;margin-bottom:10px}
+  .gcard h3{font-size:17px;margin-bottom:6px}
+  .gcard p{color:var(--muted);font-size:14px}
+
+  .section-head{text-align:center;max-width:660px;margin:0 auto}
+  .section-head h2{font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:-.3px}
+  .section-head p{color:var(--muted);margin-top:10px}
+
+  /* final cta */
+  .final{text-align:center;padding:72px 0;margin-top:30px}
+  .final h2{font-size:clamp(26px,4vw,40px);font-weight:900;margin-bottom:10px}
+  .final p{color:var(--muted);margin-bottom:26px}
+
+  footer{border-top:1px solid var(--border);padding:34px 0;color:var(--muted);font-size:13px}
+  .foot{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--text)}
+  .foot .spacer{flex:1}
+
+  @media(max-width:760px){
+    .row{grid-template-columns:1fr;gap:24px;margin:54px 0}
+    .row.rev .txt{order:0}
+    .nav a.link{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><img src="assets/icon.png" alt="superMosaic" /> superMosaic</div>
+    <div class="spacer"></div>
+    <a class="link" href="#features"><span class="lang-en">Features</span><span class="lang-ja">特長</span></a>
+    <a class="link priv" href="privacy.html"><span class="lang-en">Privacy</span><span class="lang-ja">プライバシー</span></a>
+    <div class="langtoggle">
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+      <button id="btn-ja" onclick="setLang('ja')">日本語</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero wrap">
+  <img class="appicon" src="assets/icon.png" alt="superMosaic icon" />
+  <h1>
+    <span class="lang-en">Hide what matters, <span class="grad">instantly</span>.</span>
+    <span class="lang-ja">隠したいところを、<span class="grad">一瞬で</span>。</span>
+  </h1>
+  <p class="sub">
+    <span class="lang-en">superMosaic auto-detects faces, skin and sensitive areas — then blurs, mosaics, whites-out or blacks-out in a single tap. Everything runs on your device.</span>
+    <span class="lang-ja">顔・肌の露出・センシティブな領域を自動で検出し、ブラー／モザイク／白塗り／黒塗りをワンタップで。すべての処理は端末内で完結します。</span>
+  </p>
+  <div class="cta">
+    <a class="appstore" href="https://apps.apple.com/jp/app/supermosaic/id6778454220" target="_blank" rel="noopener">
+      <svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zM255.4 92.1c30.5-36.2 27.7-69.2 26.8-81.1-26.9 1.6-58 18.4-75.7 39.1-19.5 22.2-31 49.6-28.5 81 29.1 2.2 55.6-12.8 77.4-39z"/></svg>
+      <span><small class="lang-en">Download on the</small><small class="lang-ja">ダウンロード</small><b>App Store</b></span>
+    </a>
+    <a class="ghost" href="#features"><span class="lang-en">See features ↓</span><span class="lang-ja">特長を見る ↓</span></a>
+  </div>
+  <p class="note">
+    <span class="lang-en">Free to start · 100% on-device · No photos ever leave your phone</span>
+    <span class="lang-ja">無料で始められます · すべて端末内で処理 · 写真が外部に送られることはありません</span>
+  </p>
+
+  <!-- EFFECT SHOWCASE -->
+  <div class="fxwrap">
+    <div class="fxgrid">
+      <div class="fxitem"><img src="assets/fx-blur.jpg" alt="Blur effect" loading="lazy" /><span class="lang-en">Blur</span><span class="lang-ja">ブラー</span></div>
+      <div class="fxitem"><img src="assets/fx-mosaic.jpg" alt="Mosaic effect" loading="lazy" /><span class="lang-en">Mosaic</span><span class="lang-ja">モザイク</span></div>
+      <div class="fxitem"><img src="assets/fx-white.jpg" alt="White-out effect" loading="lazy" /><span class="lang-en">White-out</span><span class="lang-ja">白塗り</span></div>
+      <div class="fxitem"><img src="assets/fx-color.jpg" alt="Color effect" loading="lazy" /><span class="lang-en">Color</span><span class="lang-ja">カラー</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features wrap" id="features">
+
+  <!-- 1. Auto detect -->
+  <div class="row">
+    <div class="txt">
+      <span class="tag"><span class="lang-en">Smart detection</span><span class="lang-ja">スマート検出</span></span>
+      <h2><span class="lang-en">Faces & sensitive areas, found for you</span><span class="lang-ja">顔もセンシティブな領域も、自動で検出</span></h2>
+      <p><span class="lang-en">Open a photo and superMosaic instantly finds every face — plus exposed skin and especially sensitive areas — and covers them for you. No more pinch-and-zoom guesswork.</span>
+         <span class="lang-ja">写真を開くだけで、すべての顔はもちろん、肌の露出や特にセンシティブな領域まで自動で検出してカバー。指で範囲を探す手間はもう要りません。</span></p>
+      <ul>
+        <li><span class="lang-en">Detects multiple faces at once</span><span class="lang-ja">複数の顔を一度にまとめて検出</span></li>
+        <li><span class="lang-en">Auto-flags exposed skin & sensitive regions</span><span class="lang-ja">肌の露出・センシティブ領域を自動で判定</span></li>
+        <li><span class="lang-en">Fine-tune strength and size with a slider</span><span class="lang-ja">強さ・大きさはスライダーで微調整</span></li>
+      </ul>
+    </div>
+    <div class="shot"><img src="assets/shot-detect.jpg" alt="Auto detection of faces and skin" loading="lazy" /></div>
+  </div>
+
+  <!-- 2. Effects -->
+  <div class="row rev">
+    <div class="txt">
+      <span class="tag"><span class="lang-en">Your choice</span><span class="lang-ja">選べる効果</span></span>
+      <h2><span class="lang-en">Blur, mosaic, white-out or black-out</span><span class="lang-ja">ブラー・モザイク・白塗り・黒塗り</span></h2>
+      <p><span class="lang-en">Pick the look that fits the moment. Switch effects instantly and dial in the exact intensity, block size and shape — round or square — until it's just right.</span>
+         <span class="lang-ja">シーンに合わせて効果を自由に選択。効果はその場で切り替えでき、強さ・ブロックの大きさ・形（丸／四角）まで思いどおりに調整できます。</span></p>
+      <ul>
+        <li><span class="lang-en">Soft blur for a natural finish</span><span class="lang-ja">自然に隠せるソフトなブラー</span></li>
+        <li><span class="lang-en">Classic mosaic, adjustable block size</span><span class="lang-ja">ブロックサイズ可変の定番モザイク</span></li>
+        <li><span class="lang-en">Solid white-out or black-out fill</span><span class="lang-ja">しっかり隠す白塗り・黒塗り</span></li>
+      </ul>
+    </div>
+    <div class="shot"><img src="assets/shot-mosaic.jpg" alt="Effect selection" loading="lazy" /></div>
+  </div>
+
+  <!-- 3. 4-in-1 -->
+  <div class="row">
+    <div class="txt">
+      <span class="tag"><span class="lang-en">4-in-1 mode</span><span class="lang-ja">4IN1モード</span></span>
+      <h2><span class="lang-en">Merge 4 photos as you mask</span><span class="lang-ja">4枚を合成しながら変換</span></h2>
+      <p><span class="lang-en">Combine up to four photos into one clean collage and mask them all in the same pass. Perfect for sharing a set of moments in a single, privacy-safe image.</span>
+         <span class="lang-ja">最大4枚を1枚のすっきりしたコラージュに合成し、そのまま一括でマスク。複数の思い出を、プライバシーに配慮した1枚にまとめて共有できます。</span></p>
+      <ul>
+        <li><span class="lang-en">Auto-arranged 2×2 layout</span><span class="lang-ja">2×2に自動レイアウト</span></li>
+        <li><span class="lang-en">Detection runs across all four at once</span><span class="lang-ja">4枚すべてを一括で自動検出</span></li>
+        <li><span class="lang-en">One image, ready to post</span><span class="lang-ja">そのまま投稿できる1枚に</span></li>
+      </ul>
+    </div>
+    <div class="shot duo">
+      <img src="assets/shot-4in1a.jpg" alt="4-in-1 layout" loading="lazy" />
+      <img src="assets/shot-4in1b.jpg" alt="4-in-1 masked" loading="lazy" />
+    </div>
+  </div>
+</section>
+
+<!-- POWER FEATURES GRID -->
+<section class="wrap">
+  <div class="section-head">
+    <h2><span class="lang-en">Built for speed & control</span><span class="lang-ja">速くて、思いどおり</span></h2>
+    <p><span class="lang-en">Everything you need to mask a whole camera roll without breaking a sweat.</span><span class="lang-ja">大量の写真も、ストレスなく一気に処理するための機能がそろっています。</span></p>
+  </div>
+  <div class="grid">
+    <div class="gcard"><div class="ic">🗂️</div>
+      <h3><span class="lang-en">Batch processing</span><span class="lang-ja">複数枚を一括変更</span></h3>
+      <p><span class="lang-en">Select many photos and apply the same masking to all of them in one go.</span><span class="lang-ja">複数枚をまとめて選び、同じ設定で一括処理。</span></p>
+    </div>
+    <div class="gcard"><div class="ic">✂️</div>
+      <h3><span class="lang-en">Strip black bars</span><span class="lang-ja">黒帯を除去</span></h3>
+      <p><span class="lang-en">For Instagram-style screenshots, remove the unwanted black bars at the top and bottom.</span><span class="lang-ja">インスタなどのスクショで生じる上下の不要な黒帯をきれいに除去。</span></p>
+    </div>
+    <div class="gcard"><div class="ic">🪄</div>
+      <h3><span class="lang-en">Erase magic</span><span class="lang-ja">消し消しマジック</span></h3>
+      <p><span class="lang-en">Swipe a finger to wipe away a mask — or remove unwanted objects entirely.</span><span class="lang-ja">指でなぞるだけでモザイクや不要なものを消去。</span></p>
+    </div>
+    <div class="gcard"><div class="ic">✍️</div>
+      <h3><span class="lang-en">Manual & pen mode</span><span class="lang-ja">手動・ペンモード</span></h3>
+      <p><span class="lang-en">Draw freely or drag a rectangle to mask exactly the area you want.</span><span class="lang-ja">ペンで自由に、または矩形でドラッグして好きな範囲を指定。</span></p>
+    </div>
+    <div class="gcard"><div class="ic">🔒</div>
+      <h3><span class="lang-en">100% on-device</span><span class="lang-ja">すべて端末内で完結</span></h3>
+      <p><span class="lang-en">Detection and processing happen on your phone. Nothing is uploaded.</span><span class="lang-ja">検出も処理も端末内で完結。外部に送信されません。</span></p>
+    </div>
+    <div class="gcard"><div class="ic">⚡</div>
+      <h3><span class="lang-en">Two-tap workflow</span><span class="lang-ja">かんたん2ステップ</span></h3>
+      <p><span class="lang-en">Auto-detect, fine-tune, save. That's the whole flow.</span><span class="lang-ja">自動検出 → 調整 → 保存。これだけ。</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final wrap">
+  <h2><span class="lang-en">Protect every photo before you share it</span><span class="lang-ja">シェアする前に、すべての写真を守ろう</span></h2>
+  <p><span class="lang-en">Download superMosaic and mask faces and sensitive areas in seconds.</span><span class="lang-ja">superMosaic をダウンロードして、顔やセンシティブな領域を数秒でマスク。</span></p>
+  <div class="cta">
+    <a class="appstore" href="https://apps.apple.com/jp/app/supermosaic/id6778454220" target="_blank" rel="noopener">
+      <svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zM255.4 92.1c30.5-36.2 27.7-69.2 26.8-81.1-26.9 1.6-58 18.4-75.7 39.1-19.5 22.2-31 49.6-28.5 81 29.1 2.2 55.6-12.8 77.4-39z"/></svg>
+      <span><small class="lang-en">Download on the</small><small class="lang-ja">ダウンロード</small><b>App Store</b></span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand"><img src="assets/icon.png" alt="" style="width:26px;height:26px;border-radius:7px" /> superMosaic</div>
+    <div class="spacer"></div>
+    <a href="privacy.html"><span class="lang-en">Privacy Policy</span><span class="lang-ja">プライバシーポリシー</span></a>
+    <a href="https://apps.apple.com/jp/app/supermosaic/id6778454220" target="_blank" rel="noopener">App Store</a>
+    <a href="https://profu.link/u/hideto777" target="_blank" rel="noopener"><span class="lang-en">Developer</span><span class="lang-ja">開発者</span></a>
+    <a href="mailto:akky0926@gmail.com"><span class="lang-en">Contact</span><span class="lang-ja">お問い合わせ</span></a>
+  </div>
+  <div class="wrap" style="margin-top:14px;opacity:.7">© superMosaic. All rights reserved.</div>
+</footer>
+
+<script>
+  function setLang(l){
+    document.body.classList.toggle('ja', l==='ja');
+    document.documentElement.lang = l;
+    document.getElementById('btn-en').classList.toggle('active', l==='en');
+    document.getElementById('btn-ja').classList.toggle('active', l==='ja');
+    try{ localStorage.setItem('sm_lang', l); }catch(e){}
+  }
+  (function(){
+    var saved=null; try{ saved=localStorage.getItem('sm_lang'); }catch(e){}
+    var l = saved || ((navigator.language||'en').toLowerCase().startsWith('ja') ? 'ja' : 'en');
+    setLang(l);
+  })();
+</script>
+</body>
+</html>
